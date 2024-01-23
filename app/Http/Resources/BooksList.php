@@ -22,13 +22,7 @@ class BooksList extends JsonResource
         $book_count = books_voters::where("id_books", $this->id)->count();
 
         $rating = $book_count == 0 ? 0 : $total_book_rates->total_rates / $book_count;
-        // $arr = array();
-
-        // foreach($jml_book as $row){
-        //     array_push($arr , $row->id);
-        // }
-
-        // $jml_votes_book = DB::table("books_voters")->whereIn("id" , $arr)->count();
+        
         return [
             'id' => $this->id,
             'voter' => $this->voter,
@@ -36,8 +30,8 @@ class BooksList extends JsonResource
             'rating' => round($rating , 2),
             'id_books_category' => $this->category->category_name,
             'id_books_author' => $this->author->author_name,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
+            'created_at' => date('Y-m-d H:i:s', strtotime($this->created_at)),
+            'updated_at' => date('Y-m-d H:i:s', strtotime($this->updated_at)),
         ];
     }
 }

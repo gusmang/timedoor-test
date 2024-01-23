@@ -22,11 +22,10 @@ class BooksAuthorController extends Controller
         if ($request->ajax()) {
             $data = books_author::get();
             $datas = Author::collection($data);
-
-            return DataTables::of(Author::collection($data)->toArray($request))->addColumn('action', function($row){
-                    $btn = '<a href="javascript:void(0)" class="edit btn btn-primary btn-sm">View</a>';
-                    return $btn;
-                })->make(true);
+            
+            return DataTables::of($datas->toArray($request))
+                ->addIndexColumn()
+                ->make(true);
         }
           
         $title = "Timedoor test - Author List";

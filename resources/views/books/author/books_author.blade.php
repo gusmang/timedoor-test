@@ -25,8 +25,9 @@
             , serverSide: true
             , ajax: "{{ route('books_author.index') }}"
             , columns: [{
-                    data: 'id'
-                    , name: 'id'
+                    "data": 'DT_RowIndex'
+                    , orderable: false
+                    , searchable: false
                 }
                 , {
                     data: 'author_name'
@@ -36,8 +37,10 @@
                     data: 'votes'
                     , name: 'votes'
                 }
-
             , ]
+            , order: [
+                [2, 'desc']
+            ]
         });
 
     });
