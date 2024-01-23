@@ -70,7 +70,25 @@
             , url: "{{ route('books_rating.post_rating') }}"
             , dataType: "json"
             , success: function(data) {
+                if (data.status == "200") {
+                    Swal.fire({
+                        title: "Success!"
+                        , text: data.message
+                        , icon: "success"
+                    }).then((result) => {
+                        /* Read more about isConfirmed, isDenied below */
+                        if (result.isConfirmed) {
+                            window.location.href = "{{ route('books_list.index') }}"
+                        }
+                    });
 
+                } else {
+                    Swal.fire({
+                        title: "Failed!"
+                        , text: data.message
+                        , icon: "error"
+                    })
+                }
             }
         })
     });
