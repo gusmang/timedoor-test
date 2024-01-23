@@ -12,7 +12,6 @@ use Yajra\DataTables\Facades\DataTables;
 use Yajra\DataTables\Html\Builder;
 use Yajra\DataTables\Html\Column;
 
-
 use DB;
 
 class BooksListController extends Controller
@@ -47,9 +46,18 @@ class BooksListController extends Controller
             $start = ($request->start) ? $request->start : 0;
             //$data = books_list::offset($start)->limit(10)->get();
             $pageSize = ($request->length) ? $request->length : 10;
-            $data =  books_list::skip($start)->take($pageSize)->get();
 
-            $count_all = books_list::count();
+            $data =  books_list::with('author')->when($request->search_text != "", function ($query) use ($request) {
+                $query->where('books_name', 'like', '%'.$request->search_text.'%')->orWhereHas('author', function($query) use ($request){
+                    $query->where('author_name', 'like', '%'.$request->search_text.'%');
+                });
+            })->skip($start)->take($pageSize)->get();
+
+            $count_all = books_list::with('category')->when($request->search_text != "", function ($query) use ($request) {
+                $query->where('books_name', 'like', '%'.$request->search_text.'%')->orWhereHas('author', function($query) use ($request){
+                    $query->where('author_name', 'like', '%'.$request->search_text.'%');
+                });
+            })->count();
             
             return DataTables::of(BooksList::collection($data)->toArray($request))->with([
                 "recordsTotal" => $count_all,
@@ -57,10 +65,7 @@ class BooksListController extends Controller
                 ])
                 ->setOffset($start)
                 ->addIndexColumn()
-            ->addColumn('action', function($row){
-                $btn = '<a href="javascript:void(0)" class="edit btn btn-primary btn-sm">View</a>';
-                return $btn;
-            })->make(true);
+                ->make(true);
         }
     }
 

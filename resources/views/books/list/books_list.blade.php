@@ -3,6 +3,12 @@
 @section("content")
 <div class="container">
     <h1>Books List</h1>
+    <div class="mb-4 mt-4">
+        <form method="GET">
+            <label>Search Data: </label>
+            <input type="text" value="{{ isset($_GET['search_text']) ? $_GET['search_text'] : '' }}" name="search_text" id="search_text" class="form-control" placeholder="Search By Books or Author Name ..." />
+        </form>
+    </div>
     <table class="table table-bordered data-table">
         <thead>
             <tr>
@@ -24,13 +30,16 @@
 <script type="text/javascript">
     $(function() {
         let page = 0;
+        let searchtext = "{{ isset($_GET['search_text']) ? $_GET['search_text'] : '' }}";
         var table = $('.data-table').DataTable({
             processing: true
             , serverSide: true
-            , ajax: "{{ url('/booklist')}}"
+            , searching: false
+            , ajax: "{{ url('/booklist')}}" + '?search_text=' + searchtext
             , columns: [{
-                    data: 'id'
-                    , name: 'id'
+                    "data": 'DT_RowIndex'
+                    , orderable: false
+                    , searchable: false
                 }, {
                     data: 'id_books_category'
                     , name: 'id_books_category'
@@ -54,7 +63,6 @@
 
             , ]
         });
-
 
 
     });
