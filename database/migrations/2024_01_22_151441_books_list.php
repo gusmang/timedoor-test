@@ -17,8 +17,6 @@ return new class extends Migration
             $table->text('books_name');
             $table->unsignedBigInteger('id_books_category');
             $table->unsignedBigInteger('id_books_author');
-            $table->double('rating')->default(0);
-            $table->integer('voter')->default(0);
             $table->timestamps();
 
             $table->foreign('id_books_category')

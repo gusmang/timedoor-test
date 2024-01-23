@@ -29,8 +29,6 @@ class BooksList extends Seeder
                 'books_name' => $faker->jobTitle." ".rand(0,500),
     			'id_books_category' => $id_books_category,
                 'id_books_author' => $id_books_author,
-                'rating' => 0,
-                'voter' => 0,
                 'created_at' => date("Y-m-d H:i:s"),
                 'updated_at' => date("Y-m-d H:i:s"),
     		]);

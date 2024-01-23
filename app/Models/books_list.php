@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\books_categories;
 use App\Models\books_author;
+use App\Models\books_voters;
 
 class books_list extends Model
 {
@@ -22,5 +23,10 @@ class books_list extends Model
     public function author()
     {
         return $this->belongsTo(books_author::class,'id_books_author','id');
+    }
+
+    public function voter()
+    {
+        return $this->belongsToMany('App\books_voters');
     }
 }

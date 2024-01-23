@@ -44,27 +44,43 @@ class BooksListController extends Controller
         
         if ($request->ajax()) {
             $start = ($request->start) ? $request->start : 0;
-            //$data = books_list::offset($start)->limit(10)->get();
             $pageSize = ($request->length) ? $request->length : 10;
 
-            $data =  books_list::with('author')->when($request->search_text != "", function ($query) use ($request) {
+            $data =  books_list::join("books_voters" , "books_voters.id_books" , "books_list.id")->select('books_list.*','books_voters.rates',DB::raw('count(books_voters.rates) as voter'),DB::raw('round(AVG(books_voters.rates),2) as avg_rating'))->with('author')
+            ->when($request->search_text != "", function ($query) use ($request) {
                 $query->where('books_name', 'like', '%'.$request->search_text.'%')->orWhereHas('author', function($query) use ($request){
                     $query->where('author_name', 'like', '%'.$request->search_text.'%');
                 });
-            })->skip($start)->take($pageSize)->get();
-
-            $count_all = books_list::with('category')->when($request->search_text != "", function ($query) use ($request) {
-                $query->where('books_name', 'like', '%'.$request->search_text.'%')->orWhereHas('author', function($query) use ($request){
-                    $query->where('author_name', 'like', '%'.$request->search_text.'%');
-                });
-            })->count();
+            })->groupBy('books_list.id')->orderByRaw("avg_rating DESC, voter DESC")->skip($start)->take($pageSize)->get();
             
-            return DataTables::of(BooksList::collection($data)->toArray($request))->with([
-                "recordsTotal" => $count_all,
-                "recordsFiltered" => $count_all,
+
+            $count_all = books_list::join("books_voters" , "books_voters.id_books" , "books_list.id")->select('books_list.*','books_voters.rates',DB::raw('count(books_voters.rates) as voter'),DB::raw('round(AVG(books_voters.rates),2) as avg_rating'))->with('author')
+            ->when($request->search_text != "", function ($query) use ($request) {
+                $query->where('books_name', 'like', '%'.$request->search_text.'%')->orWhereHas('author', function($query) use ($request){
+                    $query->where('author_name', 'like', '%'.$request->search_text.'%');
+                });
+            })->groupBy('books_list.id')->orderByRaw("avg_rating DESC, voter DESC")->get();
+
+            // $data =  books_list::with('author')
+            // ->when($request->search_text != "", function ($query) use ($request) {
+            //     $query->where('books_name', 'like', '%'.$request->search_text.'%')->orWhereHas('author', function($query) use ($request){
+            //         $query->where('author_name', 'like', '%'.$request->search_text.'%');
+            //     });
+            // })->skip($start)->take($pageSize)->get();
+
+            // $count_all = books_list::count();
+
+            // $book_datas = BooksList::collection($data)->toArray($request);
+            
+            return DataTables::of($data)->with([
+                "recordsTotal" => count($count_all),
+                "recordsFiltered" => count($count_all),
                 ])
                 ->setOffset($start)
                 ->addIndexColumn()
+                // ->addColumn('average_rating', function($arrBooks){
+                //     return $arrBooks['avg_rating'];
+                // })
                 ->make(true);
         }
     }

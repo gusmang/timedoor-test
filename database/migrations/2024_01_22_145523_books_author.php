@@ -15,7 +15,6 @@ return new class extends Migration
         Schema::create('books_author', function (Blueprint $table) {
             $table->id();
             $table->text('author_name');
-            $table->integer('votes')->default(0);
             $table->timestamps();
         });
     }

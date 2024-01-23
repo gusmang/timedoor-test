@@ -53,8 +53,8 @@
                     , name: 'id_books_author'
                 }
                 , {
-                    data: 'rating'
-                    , name: 'rating'
+                    data: 'avg_rating'
+                    , name: 'avg_rating'
                 }
                 , {
                     data: 'voter'
@@ -62,6 +62,9 @@
                 }
 
             , ]
+            , order: [
+                [4, 'desc']
+            ]
         });
 
 

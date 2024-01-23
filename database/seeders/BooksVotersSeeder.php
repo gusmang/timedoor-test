@@ -27,7 +27,8 @@ class BooksVotersSeeder extends Seeder
     	for($i = 1; $i <= 500000; $i++){
             
     	      // insert data ke table pegawai menggunakan Faker
-            $books_id = rand(1,100000);
+            $books_id = $i <= 100000 ? $i : rand(1,100000);
+
             $rates = rand(1,10);
 
     		DB::table('books_voters')->insert([
@@ -44,16 +45,6 @@ class BooksVotersSeeder extends Seeder
             ];
 
             array_push($temp_array_voters , $json_arrays);
-
-             //$sum_books = DB::table("books_voters")->select(DB::raw("SUM(rates) as total_rates"))->where("id_books" , $books_id)->first();
-            // $books_count =  DB::table("books_voters")->where("id_books" , $books_id)->count();
-
-            // DB::table('books_list')->where("id" , $books_id)->update([
-            //     "rating" => $sum_books->total_rates/$books_count,
-            //     "voter" => $books_count
-            // ]);
-           // $books = DB::table("books_list")->where("id" , $books_id)->first();
-
            
     	}
         
