@@ -13,8 +13,8 @@
         <thead>
             <tr>
                 <th>No</th>
-                <th>Category</th>
                 <th>Books Name</th>
+                <th>Category</th>
                 <th>Author</th>
                 <th>Average Rating</th>
                 <th>Voter</th>
@@ -40,17 +40,18 @@
                     "data": 'DT_RowIndex'
                     , orderable: false
                     , searchable: false
-                }, {
-                    data: 'id_books_category'
-                    , name: 'id_books_category'
                 }
                 , {
                     data: 'books_name'
                     , name: 'books_name'
                 }
                 , {
-                    data: 'id_books_author'
-                    , name: 'id_books_author'
+                    data: 'category_name'
+                    , name: 'category_name'
+                }
+                , {
+                    data: 'author_name'
+                    , name: 'author_name'
                 }
                 , {
                     data: 'avg_rating'

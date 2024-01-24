@@ -24,9 +24,4 @@ class books_list extends Model
     {
         return $this->belongsTo(books_author::class,'id_books_author','id');
     }
-
-    public function voter()
-    {
-        return $this->belongsToMany('App\books_voters');
-    }
 }

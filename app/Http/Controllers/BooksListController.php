@@ -46,31 +46,22 @@ class BooksListController extends Controller
             $start = ($request->start) ? $request->start : 0;
             $pageSize = ($request->length) ? $request->length : 10;
 
-            $data =  books_list::join("books_voters" , "books_voters.id_books" , "books_list.id")->select('books_list.*','books_voters.rates',DB::raw('count(books_voters.rates) as voter'),DB::raw('round(AVG(books_voters.rates),2) as avg_rating'))->with('author')
-            ->when($request->search_text != "", function ($query) use ($request) {
+            $data =  books_list::join("books_voters" , "books_voters.id_books" , "books_list.id")
+            ->select('books_list.*','books_voters.rates',DB::raw('count(books_voters.rates) as voter'),DB::raw('round(AVG(books_voters.rates),2) as avg_rating'))
+            ->with('author','category') ->when($request->search_text != "", function ($query) use ($request) {
                 $query->where('books_name', 'like', '%'.$request->search_text.'%')->orWhereHas('author', function($query) use ($request){
                     $query->where('author_name', 'like', '%'.$request->search_text.'%');
                 });
             })->groupBy('books_list.id')->orderByRaw("avg_rating DESC, voter DESC")->skip($start)->take($pageSize)->get();
             
 
-            $count_all = books_list::join("books_voters" , "books_voters.id_books" , "books_list.id")->select('books_list.*','books_voters.rates',DB::raw('count(books_voters.rates) as voter'),DB::raw('round(AVG(books_voters.rates),2) as avg_rating'))->with('author')
-            ->when($request->search_text != "", function ($query) use ($request) {
+            $count_all = books_list::join("books_voters" , "books_voters.id_books" , "books_list.id")
+            ->select('books_list.*','books_voters.rates',DB::raw('count(books_voters.rates) as voter'),DB::raw('round(AVG(books_voters.rates),2) as avg_rating'))
+            ->with('author','category')->when($request->search_text != "", function ($query) use ($request) {
                 $query->where('books_name', 'like', '%'.$request->search_text.'%')->orWhereHas('author', function($query) use ($request){
                     $query->where('author_name', 'like', '%'.$request->search_text.'%');
                 });
             })->groupBy('books_list.id')->orderByRaw("avg_rating DESC, voter DESC")->get();
-
-            // $data =  books_list::with('author')
-            // ->when($request->search_text != "", function ($query) use ($request) {
-            //     $query->where('books_name', 'like', '%'.$request->search_text.'%')->orWhereHas('author', function($query) use ($request){
-            //         $query->where('author_name', 'like', '%'.$request->search_text.'%');
-            //     });
-            // })->skip($start)->take($pageSize)->get();
-
-            // $count_all = books_list::count();
-
-            // $book_datas = BooksList::collection($data)->toArray($request);
             
             return DataTables::of($data)->with([
                 "recordsTotal" => count($count_all),
@@ -78,9 +69,12 @@ class BooksListController extends Controller
                 ])
                 ->setOffset($start)
                 ->addIndexColumn()
-                // ->addColumn('average_rating', function($arrBooks){
-                //     return $arrBooks['avg_rating'];
-                // })
+                ->addColumn('author_name', function($arrBooks){
+                    return $arrBooks['author']['author_name'];
+                })
+                ->addColumn('category_name', function($arrBooks){
+                    return $arrBooks['category']['category_name'];
+                })
                 ->make(true);
         }
     }
