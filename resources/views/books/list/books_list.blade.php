@@ -6,7 +6,14 @@
     <div class="mb-4 mt-4">
         <form method="GET">
             <label>Search Data: </label>
-            <input type="text" value="{{ isset($_GET['search_text']) ? $_GET['search_text'] : '' }}" name="search_text" id="search_text" class="form-control" placeholder="Search By Books or Author Name ..." />
+            <div class="row">
+                <div class="col-md-8">
+                    <input type="text" value="{{ isset($_GET['search_text']) ? $_GET['search_text'] : '' }}" name="search_text" id="search_text" class="form-control" placeholder="Search By Books or Author Name ..." />
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" name="submit_btn" class="btn btn-primary"> Search </button>
+                </div>
+            </div>
         </form>
     </div>
     <table class="table table-bordered data-table">
