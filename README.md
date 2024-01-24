@@ -45,6 +45,7 @@ PHP Package
 Javascript & CSS Package
  
 - jQuery
+- Bootstrap
 - Datatable
 - Sweetalert
 - Select2
